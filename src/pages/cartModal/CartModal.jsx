@@ -5,10 +5,10 @@ import CartItem from "../../components/cartItems/CartItem";
 import { useEffect } from "react";
 
 export default function CartModal(){
-    const{handeladdToCart,cart, totalPrice,  handelPurchase, onstart}=useUserValue();
-        useEffect(()=>{
+    const{cart, totalPrice,  handelPurchase, onstart}=useUserValue();
+    useEffect(()=>{
             onstart();
-        },[])
+        })
     return<>
     <div className={styles.cartOuterContainer}>
         <div className={styles.totalBox}>
@@ -17,7 +17,7 @@ export default function CartModal(){
         </div>
 
     <div className={styles.itemsOuterContainer}>
-        {cart.length>0? cart.map((item)=><CartItem item={item}/>):<><h1>Empty Cart</h1></>}
+        {cart.length>0? cart.map((item,i)=><CartItem item={item} key={i}/>):<><h1>Empty Cart</h1></>}
         
     </div>
 

@@ -6,16 +6,16 @@ export default function Orders(){
     const {orderHistory, onstart}=useUserValue();
     useEffect(()=>{
         onstart()
-    },[])
+    })
     // orderHistory.map((arr)=>arr.map((item)=>console.log(item.timestamp)))
     
     return<>
     <div className={styles.ordersConatiner}> 
         <h1 style={{fontSize:"2.3rem", fontWeight:"800"}}>Your Orders</h1>
         <div>
-            {orderHistory.map((arr)=> arr.map((item)=>  
+            {orderHistory.map((arr)=> arr.map   ((item,i)=>  
             <>
-                <h2>Ordered On:- {
+                <h2 key={i}>Ordered On:- {
                 (new Date(item.timestamp.seconds * 1000 + item.timestamp.nanoseconds / 1000000)).toLocaleString()
                 }</h2>
                 <table>
@@ -30,7 +30,7 @@ export default function Orders(){
             <tbody>
                 {item.cart.map((prd)=>
                 <tr>
-                    <td>{prd.title}</td>
+                    <td >{prd.title}</td>
                     <td>{prd.price}</td>
                     <td>{prd.qty}</td>
                     <td>{prd.qty*prd.price}</td>
