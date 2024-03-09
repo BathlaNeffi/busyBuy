@@ -5,7 +5,7 @@ import CartItem from "../../components/cartItems/CartItem";
 import { useEffect } from "react";
 
 export default function CartModal(){
-    const{handeladdToCart,cart, totalPrice,  handelPurchase, onstart}=useUserValue();
+    const{cart, totalPrice,  handelPurchase, onstart}=useUserValue();
         useEffect(()=>{
             onstart();
         })
