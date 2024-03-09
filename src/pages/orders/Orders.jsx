@@ -6,7 +6,7 @@ export default function Orders(){
     const {orderHistory, onstart}=useUserValue();
     useEffect(()=>{
         onstart()
-    },[])
+    })
     // orderHistory.map((arr)=>arr.map((item)=>console.log(item.timestamp)))
     
     return<>

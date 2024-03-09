@@ -2,7 +2,6 @@ import styles from "./ItemGallery.module.css";
 import ItemCard from "../items/ItemCard";
 import Search from "../searchInput/Search";
 import { useEffect, useState } from "react";
-import { unmountComponentAtNode } from "react-dom";
 import Spinner from 'react-spinner-material';
 export default function ItemsGallery(){
 useEffect(()=>{
@@ -37,8 +36,8 @@ const [cateagory,setCatagory]=useState([]);
       }
 
       function checkBoxValue(cate){
-            const ind=cateagory.findIndex((item)=>item==cate)
-            if(ind==-1){
+            const ind=cateagory.findIndex((item)=>item===cate)
+            if(ind===-1){
                 setCatagory([cate,...cateagory]);
             }else{
                 cateagory.splice(ind,1);
@@ -82,7 +81,7 @@ const [cateagory,setCatagory]=useState([]);
                 
             return pricebag.price <= priceRange? pricebag:undefined
         }).filter((cate)=> {
-            return cateagory.length==0?true:cateagory.includes(cate.category.toLowerCase());
+            return cateagory.length===0?true:cateagory.includes(cate.category.toLowerCase());
         })
         .map((item,i)=><ItemCard item={item} key={i}/>)
             :
