@@ -4,7 +4,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 
 import { db } from "./firebaseInit";
-import { collection, addDoc, serverTimestamp, doc , getDocs, getDoc, updateDoc, arrayUnion, arrayRemove, setDoc,} from "firebase/firestore"; 
+import { serverTimestamp, doc , getDoc, updateDoc, arrayUnion, arrayRemove, setDoc,} from "firebase/firestore"; 
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
   
 
@@ -43,7 +43,7 @@ export default function CustomUserInfoProvider({children}){
          setCart(docSnap.data().cart);
          let total=0;
           await docSnap.data().cart.map((item)=>{
-            total+= (item.price*item.qty)
+             return total+= (item.price*item.qty)
           })
           total=Math.round(total *100) /100;
           setTotalPrice(total);
@@ -67,7 +67,7 @@ export default function CustomUserInfoProvider({children}){
                   // console.log('User signed up successfully!');
                   toast.success("User signed up successfully!");
                   // console.log('New User ID:', newUser.uid);
-                  const docRef = await setDoc(doc(db, "users",newUser.uid), {
+                  await setDoc(doc(db, "users",newUser.uid), {
                       user,
                       cart:[],
                       order:[],
@@ -135,7 +135,7 @@ export default function CustomUserInfoProvider({children}){
 
     async function handeladdToCart(item){
 
-        const ind=cart.findIndex((prd)=>prd.id==item.id);
+        const ind=cart.findIndex((prd)=>prd.id===item.id);
         if(ind===-1){
             setCart([item,...cart]);
             const docRef = doc(db, "users", userId);
@@ -162,7 +162,7 @@ export default function CustomUserInfoProvider({children}){
     }
 
     async function handelRemoveToCart(id){
-        const ind=cart.findIndex((prd)=>prd.id==id);
+        const ind=cart.findIndex((prd)=>prd.id===id);
         if(ind!==-1){
             let item={...cart[ind]};
             if(cart[ind].qty<=1){
@@ -188,7 +188,7 @@ export default function CustomUserInfoProvider({children}){
     }
 
     async function handelRemoveItem(id){
-        const ind=cart.findIndex((prd)=>prd.id==id);
+        const ind=cart.findIndex((prd)=>prd.id===id);
         if(ind!==-1){
             let item={...cart[ind]};
                 cart.splice(ind,1);
