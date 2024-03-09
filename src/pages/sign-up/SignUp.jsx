@@ -11,9 +11,10 @@ export default function SignUp(){
     const navigate=useNavigate();
     let redirect=false;
 
-    function createUser(e){
+    async function createUser(e){
         e.preventDefault();
-        redirect=handelCreateUser({...user});
+        redirect= await handelCreateUser({...user});
+        console.log(redirect);
         if(redirect){
             navigate("/sign-in")
         }

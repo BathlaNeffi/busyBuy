@@ -7,7 +7,7 @@ export default function Orders(){
     useEffect(()=>{
         onstart()
     },[])
-    orderHistory.map((arr)=>arr.map((item)=>console.log(item.timestamp)))
+    // orderHistory.map((arr)=>arr.map((item)=>console.log(item.timestamp)))
     
     return<>
     <div className={styles.ordersConatiner}> 

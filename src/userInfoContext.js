@@ -5,7 +5,8 @@ import "react-toastify/dist/ReactToastify.css";
 
 import { db } from "./firebaseInit";
 import { collection, addDoc, serverTimestamp, doc , getDocs, getDoc, updateDoc, arrayUnion, arrayRemove, setDoc,} from "firebase/firestore"; 
-
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+  
 
 
 
@@ -21,6 +22,7 @@ export default function CustomUserInfoProvider({children}){
     const [cart,setCart]=useState([]);
     const [totalPrice, setTotalPrice]=useState(0);
     const [orderHistory,setOrderHistory]=useState([]);
+    const auth=getAuth();
 
 
     useEffect(()=>{
@@ -57,34 +59,71 @@ export default function CustomUserInfoProvider({children}){
     }
 
     async function handelCreateUser(user){
-        const docRef = await addDoc(collection(db, "users"), {
-            user,
-            cart:[],
-            order:[],
-            timestamp: serverTimestamp() 
-          });
 
-        //   console.log(docRef);
 
-        return true;
+          try {
+                const userCredential= await createUserWithEmailAndPassword(auth, user.email, user.password);
+                const newUser = userCredential.user;
+                  // console.log('User signed up successfully!');
+                  toast.success("User signed up successfully!");
+                  // console.log('New User ID:', newUser.uid);
+                  const docRef = await setDoc(doc(db, "users",newUser.uid), {
+                      user,
+                      cart:[],
+                      order:[],
+                      timestamp: serverTimestamp() 
+                    });
+                  return true;
+          } catch (error) {
+            // console.log(error);
+            const errorMessage=error.message;
+            const startIndex = errorMessage.indexOf("(") + 1;
+            const lastIndex= errorMessage.indexOf(")");
+            toast.error(errorMessage.substring(startIndex,lastIndex), {
+              position: "top-right",
+            },{ autoClose: 2000 });
+            return false;
+          }
     }
 
     async function handelCreateSession(signData){
-        let isauthticated=false;
-        const querySnapshot = await getDocs(collection(db, "users"));
-        // console.log(signData);
-            querySnapshot.forEach((doc) => {
-            // doc.data() is never undefined for query doc snapshots
-            // console.log(doc.id, " => ", doc.data().user);
-            let data=doc.data().user;
-            let check=(data.email==signData.email && data.password==signData.password);
-            if(check){
-                    localStorage.setItem('busyBuyUser',doc.id);
-                    setUserId(doc.id);
-                    isauthticated=true;
-                }
-            });
-            return isauthticated;
+        // let isauthticated=false;
+        // const querySnapshot = await getDocs(collection(db, "users"));
+        // // console.log(signData);
+        //     querySnapshot.forEach((doc) => {
+        //     // doc.data() is never undefined for query doc snapshots
+        //     // console.log(doc.id, " => ", doc.data().user);
+        //     let data=doc.data().user;
+        //     let check=(data.email==signData.email && data.password==signData.password);
+        //     if(check){
+        //             localStorage.setItem('busyBuyUser',doc.id);
+        //             setUserId(doc.id);
+        //             isauthticated=true;
+        //         }
+        //     });
+        //     return isauthticated;
+
+        try {
+          const userCredential = await signInWithEmailAndPassword(auth,signData.email, signData.password);
+            
+            const user = userCredential.user;
+            // console.log('User signed in successfully!');
+            // console.log('User ID:', user.uid);
+            if(user){
+              localStorage.setItem('busyBuyUser',user.uid);
+              setUserId(user.uid);
+          }
+            return true;
+          
+        } catch (error) {
+            const errorMessage=error.message;
+            const startIndex = errorMessage.indexOf("(") + 1;
+            const lastIndex= errorMessage.indexOf(")");
+            toast.error(errorMessage.substring(startIndex,lastIndex), {
+              position: "top-right",
+            },{ autoClose: 2000 });
+            return false;
+        }
     }
 
 
